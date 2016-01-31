@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting label="32010" type="select" id="device" lvalues="32015|32012|32013|32014" default="0"/>
+	<setting label="32011" type="bool" id="factoryReset" default="false"/>
+    <setting label="32021" type="select" id="XSstorage" lvalues="32024|32022|32023" default="0" visible="eq(-2,XIOS XS)" enable="eq(-2,XIOS XS)"/>
+    <setting label="32021" type="select" id="DSM3storage" lvalues="32024|32022" default="0" visible="eq(-3,XIOS DS M3)" enable="eq(-3,XIOS DS M3)"/>
+    <setting label="32021" type="select" id="DSM1storage" lvalues="32022|32023" default="0" visible="eq(-4,XIOS DS M1)" enable="eq(-4,XIOS DS M1)"/>
+</settings>

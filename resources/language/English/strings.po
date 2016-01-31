@@ -1,0 +1,173 @@
+# Kodi Media Center language file
+# Addon Name: Firmware install
+# Addon id: script.module.firmware.update
+# Addon Provider: snappy46
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32001"
+msgid "Choose firmware to install"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Firmware Update"
+msgstr ""
+
+msgctxt "#32003"
+msgid "     Revision Date: "
+msgstr ""
+
+msgctxt "#32004"
+msgid "Firmware download"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Downloading File"
+msgstr ""
+
+msgctxt "#32006"
+msgid "\n\n Install this firmware?"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Confirm firmware update"
+msgstr ""
+
+msgctxt "#32008"
+msgid "You have selected factory reset in the settings. This will delete all your current kodi setup and user data.  \n\nAre you sure you wish to continue?"
+msgstr ""
+
+msgctxt "#32009"
+msgid "Ready to install"
+msgstr ""
+
+msgctxt "#32010"
+msgid "Pivos device selected:"
+msgstr ""
+
+msgctxt "#32011"
+msgid "Factory Reset:"
+msgstr ""
+
+msgctxt "#32012"
+msgid "XIOS XS"
+msgstr ""
+
+msgctxt "#32013"
+msgid "XIOS DS M3"
+msgstr ""
+
+msgctxt "#32014"
+msgid "XIOS DS M1"
+msgstr ""
+
+msgctxt "#32015"
+msgid "None"
+msgstr ""
+
+msgctxt "#32016"
+msgid "Rebooting Pivos player..."
+msgstr ""
+
+msgctxt "#32017"
+msgid "Calculating and verifying file MD5 Sum"
+msgstr ""
+
+msgctxt "#32018"
+msgid "Percentage complete: "
+msgstr ""
+
+msgctxt "#32019"
+msgid "File Check"
+msgstr ""
+
+msgctxt "#32020"
+msgid "File integrity check pass."
+msgstr ""
+
+msgctxt "#32021"
+msgid "Storage location for firmware download:"
+msgstr ""
+
+msgctxt "#32022"
+msgid "SDCard"
+msgstr ""
+
+msgctxt "#32023"
+msgid "USB"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Cache"
+msgstr ""
+
+# Error messages -----------------------------------
+
+msgctxt "#32030"
+msgid "Firmware list download failed.\n\nMake sure your device is connected to the internet."
+msgstr ""
+
+msgctxt "#32031"
+msgid "Firmware download canceled"
+msgstr ""
+
+msgctxt "#32032"
+msgid "Unable to make cache directory"
+msgstr ""
+
+msgctxt "#32033"
+msgid "Error Firmware install process could not be continued"
+msgstr ""
+
+msgctxt "#32034"
+msgid "Unable to create cache mount"
+msgstr ""
+
+msgctxt "#32035"
+msgid "Please select a device in the configuration menu (settings) before using."
+msgstr ""
+
+msgctxt "#32036"
+msgid "Failed file integrity check.\n\nPlease try again.!!!"
+msgstr ""
+
+
+# Main Menu -----------------------------------------
+
+msgctxt "#32050"
+msgid "Main Menu"
+msgstr ""
+
+msgctxt "#32051"
+msgid "Install firmware (As Per addon Settings)"
+msgstr ""
+
+msgctxt "#32052"
+msgid "Wipe Data/Factory Reset"
+msgstr ""
+
+msgctxt "#32053"
+msgid "Wipe Cache Partition"
+msgstr ""
+
+msgctxt "#32054"
+msgid "Reboot to recovery console"
+msgstr ""
+
+msgctxt "#32055"
+msgid "Exit"
+msgstr ""
+
+
+
