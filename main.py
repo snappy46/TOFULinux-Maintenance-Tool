@@ -176,7 +176,7 @@ def recoverCommand(menuSelection):
     result = os.system(shellCommand)
     if result == 0 and shellCommand != ':':
         dialog = xbmcgui.Dialog()
-        dialog.notification(langString(32009), langString(32016), icon='', time=3000)
+        dialog.notification(langString(32009), langString(32016), icon=xbmcgui.NOTIFICATION_INFO, time=3000)
         shellCommand = 'reboot recovery'
         os.system(shellCommand)
     if result != 0:

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
+<settings label="32025">
     <setting label="32010" type="select" id="device" lvalues="32015|32012|32013|32014" default="0"/>
 	<setting label="32011" type="bool" id="factoryReset" default="false"/>
     <setting label="32021" type="select" id="XSstorage" lvalues="32024|32022|32023" default="0" visible="eq(-2,XIOS XS)" enable="eq(-2,XIOS XS)"/>

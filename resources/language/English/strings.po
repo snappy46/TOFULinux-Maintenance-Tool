@@ -49,7 +49,7 @@ msgid "You have selected factory reset in the settings. This will delete all you
 msgstr ""
 
 msgctxt "#32009"
-msgid "Ready to install"
+msgid "TOFULinux Tool"
 msgstr ""
 
 msgctxt "#32010"
@@ -111,6 +111,11 @@ msgstr ""
 msgctxt "#32024"
 msgid "Cache"
 msgstr ""
+
+msgctxt "#32025"
+msgid "Firmware"
+msgstr ""
+
 
 # Error messages -----------------------------------
 

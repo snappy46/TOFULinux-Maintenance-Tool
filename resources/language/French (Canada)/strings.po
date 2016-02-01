@@ -49,8 +49,8 @@ msgid "You have selected factory reset in the settings. This will delete all you
 msgstr "Vous avez sélectionné une réinitialisation initial dans les paramètres. Cette opération va supprimer toute votre configuration et les données de Kodi actuelle.  Êtes-vous sûr de vouloir continuer?"
 
 msgctxt "#32009"
-msgid "Ready to install"
-msgstr "Prêt à installer"
+msgid "TOFULinux Tool"
+msgstr "Outil TOFULinux"
 
 msgctxt "#32010"
 msgid "Pivos device selected:"
@@ -112,6 +112,10 @@ msgctxt "#32024"
 msgid "Cache"
 msgstr ""
 
+msgctxt "#32025"
+msgid "Firmware"
+msgstr "Micrologiciel"
+
 # Error messages
 
 msgctxt "#32030"
@@ -143,5 +147,29 @@ msgid "Failed file integrity check.\n\nPlease try again.!!!"
 msgstr "Échec fichier de contrôle d'intégrité. \n\nVeuillez réessayer. !!!"
 
 
+# Main Menu -----------------------------------------
 
+msgctxt "#32050"
+msgid "Main Menu"
+msgstr "Menu Principale"
+
+msgctxt "#32051"
+msgid "Install firmware (As Per addon Settings)"
+msgstr "Installer micrologiciel (Selon la configuration)"
+
+msgctxt "#32052"
+msgid "Wipe Data/Factory Reset"
+msgstr "Effacer les données / réinitialisation initiale"
+
+msgctxt "#32053"
+msgid "Wipe Cache Partition"
+msgstr "Effacer la partition de cache"
+
+msgctxt "#32054"
+msgid "Reboot to recovery console"
+msgstr "Redémarrage à la console de récupération"
+
+msgctxt "#32055"
+msgid "Exit"
+msgstr "Terminer"
 
