@@ -25,7 +25,7 @@ msgid "Firmware Update"
 msgstr ""
 
 msgctxt "#32003"
-msgid "     Revision Date: "
+msgid "     Dated: "
 msgstr ""
 
 msgctxt "#32004"

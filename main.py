@@ -8,6 +8,8 @@ from xbmcaddon import Addon
 import xbmc
 
 firmwareArray = []
+firmware_nameArray = []
+revision_dateArray = []
 linkArray = []
 md5Array = []
 webfile = ""
@@ -92,8 +94,9 @@ def download_firmware_list(source):
         firmwares = doc.getElementsByTagName('Version')
 
         for firmware in firmwares:
-            version_date = firmware.getAttribute('Updated')
+            version_date = (firmware.getAttribute('Updated')[:-9])
             basic = find_childnode_by_name(firmware, 'Basic')
+            firmware_nameArray.append(basic.getAttribute('name'))
             firmwareArray.append(basic.getAttribute('name') + lang_string(32003) + version_date)
             linkArray.append(basic.getAttribute('URL'))
             md5Array.append(basic.getAttribute('MD5'))
@@ -208,10 +211,10 @@ def md5(fname):
     return file_hash.hexdigest()
 
 
-def firmware_update(message, download_link, md5_sum):
+def firmware_update(selection):
     # control the firmware selected installation
     dialog = xbmcgui.Dialog()
-    message = message + lang_string(32006)
+    message = firmwareArray[selection] + lang_string(32006)
     runscript = dialog.yesno(lang_string(32002), message)
 
     if runscript and Addon().getSetting('factoryReset') == 'true':
@@ -219,8 +222,8 @@ def firmware_update(message, download_link, md5_sum):
 
     if runscript:
         download_file = firmware_download_location()
-        downloader(download_link, download_file)
-        if md5(download_file) != md5_sum:
+        downloader(linkArray[selection], download_file)
+        if md5(download_file) != md5Array[selection]:
             # display error message
             message_ok(lang_string(32036))
         else:
@@ -268,7 +271,7 @@ def mainmenu_selection():
                     continue
                 else:
                     # proceed with firmware installation based on firmware selected.
-                    firmware_update(firmwareArray[ret], linkArray[ret], md5Array[ret])
+                    firmware_update(ret)
 
         elif selected_menu_item == 4 or selected_menu_item == -1:  # exit or no selection made
             break

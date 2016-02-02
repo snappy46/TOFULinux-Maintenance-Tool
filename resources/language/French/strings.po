@@ -25,8 +25,8 @@ msgid "Firmware Update"
 msgstr "Mise à jour du micrologiciel"
 
 msgctxt "#32003"
-msgid "     Revision Date: "
-msgstr "     Date de révision: "
+msgid "     Dated: "
+msgstr "    Daté: "
 
 msgctxt "#32004"
 msgid "Firmware download"
