@@ -39,7 +39,7 @@ class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
         w2 = 640
         h2 = 64
         self.logo = logoImage
-        self.LOGO = xbmcgui.ControlImage(l2, t2, w2, h2, logoImage, aspectRatio=0)
+        self.LOGO = xbmcgui.ControlImage(l2, t2, w2, h2, logoImage, aspectRatio=2)
         self.addControl(self.LOGO)
         self.show()
         mainmenu_selection()
