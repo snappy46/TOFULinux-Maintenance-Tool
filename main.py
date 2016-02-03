@@ -12,7 +12,6 @@ firmware_nameArray = []
 revision_dateArray = []
 linkArray = []
 md5Array = []
-webfile = ""
 
 addonPath = Addon().getAddonInfo('path')
 mediaPath = xbmc.translatePath(os.path.join(addonPath, 'resources/media/'))
@@ -279,7 +278,7 @@ def mainmenu_selection():
             recover_command(selected_menu_item)
 
 if __name__ == "__main__":
-    # instanciate main window
+    # instantiate main window
     mydisplay = MainWindow()
     # remove main window
     del mydisplay
