@@ -8,7 +8,6 @@ from xbmcaddon import Addon
 import xbmc
 
 firmwareArray = []
-firmware_nameArray = []
 revision_dateArray = []
 linkArray = []
 md5Array = []
@@ -91,17 +90,19 @@ def download_firmware_list(source):
         response = urllib.urlopen(source)
         doc = minidom.parse(response)
         firmwares = doc.getElementsByTagName('Version')
+        response.close()
 
         for firmware in firmwares:
             version_date = (firmware.getAttribute('Updated')[:-9])
             basic = find_childnode_by_name(firmware, 'Basic')
-            firmware_nameArray.append(basic.getAttribute('name'))
             firmwareArray.append(basic.getAttribute('name') + lang_string(32003) + version_date)
             linkArray.append(basic.getAttribute('URL'))
             md5Array.append(basic.getAttribute('MD5'))
+        return True
 
     except:
         message_ok(lang_string(32030))
+        return False
 
 
 def firmware_download_location():
@@ -248,8 +249,8 @@ def check_hardware():
 
 def clean_library():
     # clean video and music database
-    librarymenu_items = ["Video library", "Music library", "Cancel"]
-    selection = xbmcgui.Dialog().select("Select library to clean", librarymenu_items)
+    librarymenu_items = [lang_string(32061), lang_string(32062), lang_string(32063)]
+    selection = xbmcgui.Dialog().select(lang_string(32060), librarymenu_items)
     if selection == 0: xbmc.executebuiltin('cleanlibrary(video)')
     elif selection == 1: xbmc.executebuiltin('cleanlibrary(music)')
     else: return
@@ -257,7 +258,7 @@ def clean_library():
 
 def mainmenu_selection():
     """ Create main menu  """
-    mainmenu_items = [lang_string(32051), lang_string(32052), lang_string(32053), lang_string(32054), "Clean Library (Database)", lang_string(32055)]
+    mainmenu_items = [lang_string(32051), lang_string(32052), lang_string(32053), lang_string(32054), lang_string(32055), lang_string(32056)]
     while True:
         # display menu in a dialogue for selection. selectedMenuItem = position of selection
         selected_menu_item = xbmcgui.Dialog().select(lang_string(32050), mainmenu_items)
@@ -270,16 +271,15 @@ def mainmenu_selection():
 
             # download firmware list for selection
             if imagelist_link != '':
-                download_firmware_list(imagelist_link)
+                if download_firmware_list(imagelist_link):
+                    # display firmware list in a dialogue for selection. ret = position of selection
+                    ret = xbmcgui.Dialog().select(lang_string(32001), firmwareArray)  #
 
-                # display firmware list in a dialogue for selection. ret = position of selection
-                ret = xbmcgui.Dialog().select(lang_string(32001), firmwareArray)  #
-
-                if ret == -1:  # no selection was made just quit
-                    continue
-                else:
-                    # proceed with firmware installation based on firmware selected.
-                    firmware_update(ret)
+                    if ret == -1:  # no selection was made just quit
+                        continue
+                    else:
+                        # proceed with firmware installation based on firmware selected.
+                        firmware_update(ret)
 
         elif selected_menu_item == 4: clean_library()  #clean library selected
 

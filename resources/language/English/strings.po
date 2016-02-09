@@ -171,8 +171,28 @@ msgid "Reboot to recovery console"
 msgstr ""
 
 msgctxt "#32055"
+msgid "Clean library (Database)"
+msgstr ""
+
+msgctxt "#32056"
 msgid "Exit"
 msgstr ""
 
 
+# Clean Library labels -----------------------------------------
 
+msgctxt "#32060"
+msgid "Select library to clean"
+msgstr ""
+
+msgctxt "#32061"
+msgid "Video library"
+msgstr ""
+
+msgctxt "#32062"
+msgid "Music library"
+msgstr ""
+
+msgctxt "#32063"
+msgid "Cancel"
+msgstr ""
