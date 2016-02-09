@@ -246,9 +246,18 @@ def check_hardware():
         return ''
 
 
+def clean_library():
+    # clean video and music database
+    librarymenu_items = ["Video library", "Music library", "Cancel"]
+    selection = xbmcgui.Dialog().select("Select library to clean", librarymenu_items)
+    if selection == 0: xbmc.executebuiltin('cleanlibrary(video)')
+    elif selection == 1: xbmc.executebuiltin('cleanlibrary(music)')
+    else: return
+
+
 def mainmenu_selection():
     """ Create main menu  """
-    mainmenu_items = [lang_string(32051), lang_string(32052), lang_string(32053), lang_string(32054), lang_string(32055)]
+    mainmenu_items = [lang_string(32051), lang_string(32052), lang_string(32053), lang_string(32054), "Clean Library (Database)", lang_string(32055)]
     while True:
         # display menu in a dialogue for selection. selectedMenuItem = position of selection
         selected_menu_item = xbmcgui.Dialog().select(lang_string(32050), mainmenu_items)
@@ -272,7 +281,9 @@ def mainmenu_selection():
                     # proceed with firmware installation based on firmware selected.
                     firmware_update(ret)
 
-        elif selected_menu_item == 4 or selected_menu_item == -1:  # exit or no selection made
+        elif selected_menu_item == 4: clean_library()  #clean library selected
+
+        elif selected_menu_item == 5 or selected_menu_item == -1:  # exit or no selection made
             break
         else:
             recover_command(selected_menu_item)
