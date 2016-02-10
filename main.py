@@ -65,14 +65,6 @@ def yesno_dialog(title, message):
     return dialog.yesno(title, message)
 
 
-def find_childnode_by_name(parent, name):
-    # Return parent childnode that match name
-    for node in parent.childNodes:
-        if node.nodeType == node.ELEMENT_NODE and node.localName == name:
-            return node
-    return None
-
-
 def find_storage_based_on_device():
     # Return storage based on the device selected
     device = Addon().getSetting('device')
@@ -94,7 +86,7 @@ def download_firmware_list(source):
 
         for firmware in firmwares:
             version_date = (firmware.getAttribute('Updated')[:-9])
-            basic = find_childnode_by_name(firmware, 'Basic')
+            basic = firmware.getElementsByTagName('Basic')[0]
             firmwareArray.append(basic.getAttribute('name') + lang_string(32003) + version_date)
             linkArray.append(basic.getAttribute('URL'))
             md5Array.append(basic.getAttribute('MD5'))
