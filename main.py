@@ -48,6 +48,10 @@ class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
             self.close()
 
 
+class DownloadCancelled(Exception):
+    pass
+
+
 def lang_string(string_id):
     # Return string based on language and id
     return Addon().getLocalizedString(string_id)
@@ -112,7 +116,11 @@ def downloader(url, dest):
     # download file and display progress in dialog progress window
     dp = xbmcgui.DialogProgress()
     dp.create(lang_string(32004), lang_string(32005), url)
-    urllib.urlretrieve(url, dest, lambda nb, bs, fs, url=url: _pbhook(nb, bs, fs, url, dp))
+    try:
+        urllib.urlretrieve(url, dest, lambda nb, bs, fs, url=url: _pbhook(nb, bs, fs, url, dp))
+        return True
+    except DownloadCancelled:
+        return False
 
 
 def _pbhook(numblocks, blocksize, filesize, url=None, dp=None):
@@ -126,9 +134,12 @@ def _pbhook(numblocks, blocksize, filesize, url=None, dp=None):
         dp.close()
     if dp.iscanceled():
         dp.close()
-        os.remove(firmware_download_location())
+        try:
+            os.remove(firmware_download_location())
+        except OSError:
+            pass
         message_ok(lang_string(32031))
-        quit()
+        raise DownloadCancelled
 
 
 def firmware_location_onreboot():
@@ -214,14 +225,14 @@ def firmware_update(selection):
 
     if runscript:
         download_file = firmware_download_location()
-        downloader(linkArray[selection], download_file)
-        if md5(download_file) != md5Array[selection]:
-            # display error message
-            message_ok(lang_string(32036))
-        else:
-            dialog = xbmcgui.Dialog()
-            dialog.notification(lang_string(32019), lang_string(32020), icon='', time=3000)
-            recover_command(0)
+        if downloader(linkArray[selection], download_file):
+            if md5(download_file) != md5Array[selection]:
+                # display error message
+                message_ok(lang_string(32036))
+            else:
+                dialog = xbmcgui.Dialog()
+                dialog.notification(lang_string(32019), lang_string(32020), icon='', time=3000)
+                recover_command(0)
 
 
 def check_hardware():
