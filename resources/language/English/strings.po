@@ -120,7 +120,7 @@ msgstr ""
 # Error messages -----------------------------------
 
 msgctxt "#32030"
-msgid "Firmware list download failed.\n\nMake sure your device is connected to the internet."
+msgid "Your device is not connected to the internet.\n\nFirmware installation will not be possible."
 msgstr ""
 
 msgctxt "#32031"

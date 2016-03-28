@@ -7,10 +7,13 @@ import hashlib
 from xbmcaddon import Addon
 import xbmc
 
+# Global variables
+firmwareId = []
 firmwareArray = []
 revision_dateArray = []
 linkArray = []
 md5Array = []
+internet_is_available = False
 
 addonPath = Addon().getAddonInfo('path')
 mediaPath = xbmc.translatePath(os.path.join(addonPath, 'resources/media/'))
@@ -24,6 +27,12 @@ OverlayBackground = media_path_file('background.png')
 logoImage = media_path_file('Tofu-Linux-Logo-white.png')
 
 ACTION_PREVIOUS_MENU = 10
+
+# Device Constant
+PIVOS_XS = 1
+PIVOS_DSM3 = 2
+PIVOS_DSM1 = 3
+UNKNOWN_DEVICE = -1
 
 
 class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
@@ -40,6 +49,18 @@ class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
         self.logo = logoImage
         self.LOGO = xbmcgui.ControlImage(l2, t2, w2, h2, logoImage, aspectRatio=2)
         self.addControl(self.LOGO)
+        self.strAction = xbmcgui.ControlLabel(160, 570, 600, 200, '', 'font12', '0xFFEE862A')
+        self.addControl(self.strAction)
+        self.strAction.setLabel('Installed Firmware:')
+        self.strAction = xbmcgui.ControlLabel(315, 570, 600, 200, '', 'font12', '0xFFFFFFFF')
+        self.addControl(self.strAction)
+        self.strAction.setLabel(convert_version_to_name())
+        self.strAction = xbmcgui.ControlLabel(160, 590, 600, 200, '', 'font12', '0xFFEE862A')
+        self.addControl(self.strAction)
+        self.strAction.setLabel('Latest Firmware:')
+        self.strAction = xbmcgui.ControlLabel(315, 590, 600, 200, '', 'font12', '0xFFFFFFFF')
+        self.addControl(self.strAction)
+        self.strAction.setLabel(get_latest_firmware())
         self.show()
         mainmenu_selection()
 
@@ -55,6 +76,49 @@ class DownloadCancelled(Exception):
 def lang_string(string_id):
     # Return string based on language and id
     return Addon().getLocalizedString(string_id)
+
+
+def get_latest_firmware():
+    # return latest firmware if available.
+    if firmwareArray:
+        return firmwareArray[0]
+    else:
+        return "Unavailable"
+
+def convert_version_to_name():
+    # return firmware name based on current build date.
+    build_date = get_build_date()
+    count = 0
+    for firmware in firmwareId:
+        if build_date in firmware:
+            return firmwareArray[count]
+        count += 1
+    return build_date
+
+
+def get_build_date():
+    # return current version based on /etc/build.id, return unknown if file not found.
+    p = os.popen("cat /home/marcel/build.id")
+    build_date = p.read().replace("\n", "")
+    if build_date == "":
+        return "Unknown"
+    else:
+        return build_date
+
+
+def get_device_type():
+    # return current device type based on etc/hostname
+    p = os.popen("cat /home/marcel/hostname")
+    device_type = p.read().replace("\n", "")
+    if device_type != "":
+        if device_type == "pivos-xs":
+            return PIVOS_XS
+        elif device_type == "pivos-m3":
+            return PIVOS_DSM3
+        elif device_type == "pivos-m1":
+            return PIVOS_DSM1
+    else:
+        return UNKNOWN_DEVICE
 
 
 def message_ok(message):
@@ -82,6 +146,7 @@ def find_storage_based_on_device():
 
 def download_firmware_list(source):
     # Download firmware list and store relevant data in arrays
+    global internet_is_available
     try:
         response = urllib.urlopen(source)
         doc = minidom.parse(response)
@@ -89,14 +154,18 @@ def download_firmware_list(source):
         response.close()
 
         for firmware in firmwares:
-            version_date = (firmware.getAttribute('Updated')[:-9])
+          #  version_date = (firmware.getAttribute('Updated')[:-9])
             basic = firmware.getElementsByTagName('Basic')[0]
-            firmwareArray.append(basic.getAttribute('name') + lang_string(32003) + version_date)
+          #  firmwareArray.append(basic.getAttribute('name') + lang_string(32003) + version_date)
+            firmwareId.append(basic.getAttribute('id'))
+            firmwareArray.append(basic.getAttribute('name'))
             linkArray.append(basic.getAttribute('URL'))
             md5Array.append(basic.getAttribute('MD5'))
+        internet_is_available = True
         return True
 
     except:
+        internet_is_available = False
         message_ok(lang_string(32030))
         return False
 
@@ -250,39 +319,72 @@ def check_hardware():
         return ''
 
 
+def get_firmware_url(device):
+    # return firmware url based on the device
+    if device == PIVOS_XS:
+        return 'http://update.pivosgroup.com/linux/mx/update.xml'
+    elif device == PIVOS_DSM3:
+        return 'http://update.pivosgroup.com/linux/m3/update.xml'
+    elif device == PIVOS_DSM1:
+        return 'http://update.pivosgroup.com/linux/m1/update.xml'
+    else:
+        return ''
+
+
 def clean_library():
     # clean video and music database
     librarymenu_items = [lang_string(32061), lang_string(32062), lang_string(32063)]
     selection = xbmcgui.Dialog().select(lang_string(32060), librarymenu_items)
-    if selection == 0: xbmc.executebuiltin('cleanlibrary(video)')
-    elif selection == 1: xbmc.executebuiltin('cleanlibrary(music)')
-    else: return
+    if selection == 0:
+        xbmc.executebuiltin('cleanlibrary(video)')
+    elif selection == 1:
+        xbmc.executebuiltin('cleanlibrary(music)')
+    else:
+        return
+
+
+def get_mainmenu_list ():
+    # return list to be used by main menu.
+    menulist = []
+    if internet_is_available:
+        menulist.append(lang_string(32051))
+    else:
+        menulist.append("Firmware installation (Not Available)")
+    menulist.append(lang_string(32052))
+    menulist.append(lang_string(32053))
+    menulist.append(lang_string(32054))
+    menulist.append(lang_string(32055))
+    menulist.append(lang_string(32056))
+    return menulist
 
 
 def mainmenu_selection():
     """ Create main menu  """
-    mainmenu_items = [lang_string(32051), lang_string(32052), lang_string(32053), lang_string(32054), lang_string(32055), lang_string(32056)]
+    mainmenu_items = get_mainmenu_list()
     while True:
         # display menu in a dialogue for selection. selectedMenuItem = position of selection
         selected_menu_item = xbmcgui.Dialog().select(lang_string(32050), mainmenu_items)
 
         if selected_menu_item == 0:  # Install firmware selected
-            # clear firmwareArray
-            del firmwareArray[:]
-            # firmware update.xml URL
-            imagelist_link = check_hardware()
+            if internet_is_available:
+                # clear firmwareArray
+                del firmwareArray[:]
+                # firmware update.xml URL
+                imagelist_link = check_hardware()
 
-            # download firmware list for selection
-            if imagelist_link != '':
-                if download_firmware_list(imagelist_link):
-                    # display firmware list in a dialogue for selection. ret = position of selection
-                    ret = xbmcgui.Dialog().select(lang_string(32001), firmwareArray)  #
+                # download firmware list for selection
+                if imagelist_link != '':
+                    if download_firmware_list(imagelist_link):
+                        # display firmware list in a dialogue for selection. ret = position of selection
+                        ret = xbmcgui.Dialog().select(lang_string(32001), firmwareArray)  #
 
-                    if ret == -1:  # no selection was made just quit
-                        continue
-                    else:
-                        # proceed with firmware installation based on firmware selected.
-                        firmware_update(ret)
+                        if ret == -1:  # no selection was made just quit
+                            continue
+                        else:
+                            # proceed with firmware installation based on firmware selected.
+                            firmware_update(ret)
+            else:
+                continue
 
         elif selected_menu_item == 4: clean_library()  #clean library selected
 
@@ -292,6 +394,9 @@ def mainmenu_selection():
             recover_command(selected_menu_item)
 
 if __name__ == "__main__":
+    # Get current firmware list for device and setup initial global variable
+    download_firmware_list(get_firmware_url(get_device_type()))
+
     # instantiate main window
     mydisplay = MainWindow()
     # remove main window
