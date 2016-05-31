@@ -1,1 +1,2 @@
+1.0.1 (DEV Branch) Added automatic device detection, display of current and latest firmware version and some handling of internet connection.
 1.0.0 Initial Release
