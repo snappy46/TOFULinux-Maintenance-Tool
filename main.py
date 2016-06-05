@@ -7,20 +7,6 @@ import hashlib
 from xbmcaddon import Addon
 import xbmc
 
-#Devices constant
-PIVOS_XS = 0
-PIVOS_DSM3 = 1
-PIVOS_DSM1 = 2
-UNKNOWN_DEVICE = -1
-
-#Download location constant
-CACHE_DOWNLOAD = 0
-SDCARD_DOWNLOAD = 1
-USB_DOWNLOAD = 2
-UNKNOWN_DOWNLOAD = -1
-
-ACTION_PREVIOUS_MENU = 10
-
 # Global variables
 firmwareId = []
 firmwareArray = []
@@ -28,10 +14,6 @@ revision_dateArray = []
 linkArray = []
 md5Array = []
 internet_is_available = False
-device = UNKNOWN_DEVICE
-detected_device = UNKNOWN_DEVICE
-factory_reset = False
-firmware_download_location = UNKNOWN_DOWNLOAD
 
 addonPath = Addon().getAddonInfo('path')
 mediaPath = xbmc.translatePath(os.path.join(addonPath, 'resources/media/'))
@@ -43,6 +25,14 @@ def media_path_file(media_file):
 
 OverlayBackground = media_path_file('background.png')
 logoImage = media_path_file('Tofu-Linux-Logo-white.png')
+
+ACTION_PREVIOUS_MENU = 10
+
+# Device Constant
+PIVOS_XS = 1
+PIVOS_DSM3 = 2
+PIVOS_DSM1 = 3
+UNKNOWN_DEVICE = -1
 
 
 class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
@@ -62,13 +52,13 @@ class MainWindow(xbmcgui.Window):  # xbmcgui.Window): ##xbmcgui.Window
         self.strAction = xbmcgui.ControlLabel(160, 570, 600, 200, '', 'font12', '0xFFEE862A')
         self.addControl(self.strAction)
         self.strAction.setLabel('Installed Firmware:')
-        self.strAction = xbmcgui.ControlLabel(330, 570, 600, 200, '', 'font12', '0xFFFFFFFF')
+        self.strAction = xbmcgui.ControlLabel(315, 570, 600, 200, '', 'font12', '0xFFFFFFFF')
         self.addControl(self.strAction)
         self.strAction.setLabel(convert_version_to_name())
-        self.strAction = xbmcgui.ControlLabel(180, 590, 600, 200, '', 'font12', '0xFFEE862A')
+        self.strAction = xbmcgui.ControlLabel(160, 590, 600, 200, '', 'font12', '0xFFEE862A')
         self.addControl(self.strAction)
         self.strAction.setLabel('Latest Firmware:')
-        self.strAction = xbmcgui.ControlLabel(330, 590, 600, 200, '', 'font12', '0xFFFFFFFF')
+        self.strAction = xbmcgui.ControlLabel(315, 590, 600, 200, '', 'font12', '0xFFFFFFFF')
         self.addControl(self.strAction)
         self.strAction.setLabel(get_latest_firmware())
         self.show()
@@ -88,35 +78,12 @@ def lang_string(string_id):
     return Addon().getLocalizedString(string_id)
 
 
-def device_to_string(device):
-    if device == PIVOS_XS:
-        return "Pivos XS"
-    elif device == PIVOS_DSM3:
-        return "Pivos DS M3"
-    elif device == PIVOS_DSM1:
-        return "Pivos DS M1"
-    else:
-        return "Unknown"
-
-
-def download_location_to_string(location):
-    if location == CACHE_DOWNLOAD:
-        return "Cache"
-    elif location == SDCARD_DOWNLOAD:
-        return "SDCard"
-    elif location == USB_DOWNLOAD:
-        return "USB"
-    else:
-        return "Unknown"
-
-
 def get_latest_firmware():
     # return latest firmware if available.
     if firmwareArray:
         return firmwareArray[0]
     else:
         return "Unavailable"
-
 
 def convert_version_to_name():
     # return firmware name based on current build date.
@@ -141,22 +108,17 @@ def get_build_date():
 
 def get_device_type():
     # return current device type based on etc/hostname
-    global detected_device
     p = os.popen("cat /home/marcel/hostname")
     device_type = p.read().replace("\n", "")
     if device_type != "":
         if device_type == "pivos-xs":
-            detected_device = PIVOS_XS
             return PIVOS_XS
         elif device_type == "pivos-m3":
-            detected_device = PIVOS_DSM3
             return PIVOS_DSM3
         elif device_type == "pivos-m1":
-            detected_device = PIVOS_DSM1
             return PIVOS_DSM1
-        else:
-            detected_device = UNKNOWN_DEVICE
-            return UNKNOWN_DEVICE
+    else:
+        return UNKNOWN_DEVICE
 
 
 def message_ok(message):
@@ -173,12 +135,13 @@ def yesno_dialog(title, message):
 
 def find_storage_based_on_device():
     # Return storage based on the device selected
-    if device == PIVOS_XS:
-        return int(Addon().getSetting('XSstorage'))
-    elif device == PIVOS_DSM3:
-        return int(Addon().getSetting('DSM3storage'))
-    elif device == PIVOS_DSM1:
-        return int(Addon().getSetting('DSM1storage')) + 1
+    device = Addon().getSetting('device')
+    if device == '1':
+        return Addon().getSetting('XSstorage')
+    elif device == '2':
+        return Addon().getSetting('DSM3storage')
+    elif device == '3':
+        return str(int(Addon().getSetting('DSM1storage')) + 1)
 
 
 def download_firmware_list(source):
@@ -207,98 +170,15 @@ def download_firmware_list(source):
         return False
 
 
-def get_firmware_download_location(selected_download_location):
+def firmware_download_location():
     # return location to save the downloaded firmware and filename
-    #download_location = find_storage_based_on_device()
-    if selected_download_location == CACHE_DOWNLOAD:  # cache selected
+    download_location = find_storage_based_on_device()
+    if download_location == '0':  # cache selected
         return '/recovery/update.img'
-    elif selected_download_location == SDCARD_DOWNLOAD:  # Sdcard selected
+    elif download_location == '1':  # Sdcard selected
         return mount_location('/dev/cardblksd1') + '/update.img'
-    elif selected_download_location == USB_DOWNLOAD:
+    else:
         return mount_location('/dev/sdb5') + '/marcel/update.img'  # USB Storage
-    else:
-        return ""
-
-
-# def firmware_download_location():
-#     # return location to save the downloaded firmware and filename
-#     download_location = find_storage_based_on_device()
-#     if download_location == '0':  # cache selected
-#         return '/recovery/update.img'
-#     elif download_location == '1':  # Sdcard selected
-#         return mount_location('/dev/cardblksd1') + '/update.img'
-#     else:
-#         return mount_location('/dev/sdb5') + '/marcel/update.img'  # USB Storage
-
-def user_default_selection():
-   # return true if firmware install should use addon setting default.
-   return yesno_dialog("Firmware Installation", "Use addon default settings?")
-
-
-def firmware_install_using_settings_values():
-    # set firmware install global variables to addon settings values.
-    global device
-    global factory_reset
-    global firmware_download_location
-    device = int(Addon().getSetting('device')) - 1
-    factory_reset = True if Addon().getSetting('factoryReset') == "true" else False
-    firmware_download_location = find_storage_based_on_device()
-
-
-def display_list_of_device():
-   #display devices in a dialogue for selection. Device_Menu_Item = position of selection
-    global device
-    device = xbmcgui.Dialog().select("Select device", ['Pivos XS', 'Pivos DS M3', 'Pivos DS M1'])
-    if device <= 2:
-       return True
-    else:
-       return False
-
-
-def set_device():
-    # set device to detected device or allow user selection.
-    global device
-    if yesno_dialog("Device confirmation", device_to_string(detected_device) + " was detected.\n\nIs this correct?"):
-        device = detected_device
-    else:
-        if not display_list_of_device():
-            message_ok("Error", "Something went wrong")
-
-
-def set_factory_reset():
-    # prompt user for factory reset option.
-    global factory_reset
-    factory_reset = yesno_dialog("Factory Reset", "Perform a device factory reset")
-
-
-def create_download_location_list():
-    # return download location list based on device
-    download_list = []
-    if device < 2:
-        download_list.append("Cache")
-    download_list.append("SDCard")
-    if device == 0 or device == 2:
-        download_list.append("USB")
-    return download_list
-
-
-def set_download_location():
-    # prompt user for firmware download location.
-    global firmware_download_location
-    firmware_download_location = xbmcgui.Dialog().select("Select download location", create_download_location_list())
-    if device == PIVOS_DSM1:
-        # account for list offset when using DSM1 since it does not have cache option
-        firmware_download_location += 1
-
-
-def confirm_entered_information():
-    # return True if user confirm that information is correct.
-    message = "Device selected: " + device_to_string(device) + "\n"
-    message += "Factory reset: "
-    message += 'Yes\n' if factory_reset else 'No\n'
-    message += "Download location: " + download_location_to_string(firmware_download_location) + "\n\n"
-   # message += "Select 'Yes' to proceed with firmware installation."
-    return yesno_dialog("Confirm Information Entered", message)
 
 
 def downloader(url, dest):
@@ -451,20 +331,6 @@ def get_firmware_url(device):
         return ''
 
 
-def install_firmware():
-    # firmware installation preliminary setup
-    if user_default_selection():
-        firmware_install_using_settings_values()
-    else:
-        set_device()
-        set_factory_reset()
-        set_download_location()
-    if confirm_entered_information():
-        message_ok("Everything seems to work")
-    else:
-        message_ok("nothing seems to work")
-
-
 def clean_library():
     # clean video and music database
     librarymenu_items = [lang_string(32061), lang_string(32062), lang_string(32063)]
@@ -502,13 +368,13 @@ def mainmenu_selection():
         if selected_menu_item == 0:  # Install firmware selected
             if internet_is_available:
                 # clear firmwareArray
-           #     del firmwareArray[:]
+                del firmwareArray[:]
                 # firmware update.xml URL
-           #     imagelist_link = check_hardware()
+                imagelist_link = check_hardware()
 
                 # download firmware list for selection
-            #    if imagelist_link != '':
-             #       if download_firmware_list(imagelist_link):
+                if imagelist_link != '':
+                    if download_firmware_list(imagelist_link):
                         # display firmware list in a dialogue for selection. ret = position of selection
                         ret = xbmcgui.Dialog().select(lang_string(32001), firmwareArray)  #
 
@@ -516,8 +382,7 @@ def mainmenu_selection():
                             continue
                         else:
                             # proceed with firmware installation based on firmware selected.
-                           # firmware_update(ret)
-                            install_firmware()
+                            firmware_update(ret)
             else:
                 continue
 
