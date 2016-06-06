@@ -98,7 +98,7 @@ def convert_version_to_name():
 
 def get_build_date():
     # return current version based on /etc/build.id, return unknown if file not found.
-    p = os.popen("cat /home/marcel/build.id")
+    p = os.popen("cat /etc/build.id")
     build_date = p.read().replace("\n", "")
     if build_date == "":
         return "Unknown"
@@ -108,7 +108,7 @@ def get_build_date():
 
 def get_device_type():
     # return current device type based on etc/hostname
-    p = os.popen("cat /home/marcel/hostname")
+    p = os.popen("cat /etc/hostname")
     device_type = p.read().replace("\n", "")
     if device_type != "":
         if device_type == "pivos-xs":
